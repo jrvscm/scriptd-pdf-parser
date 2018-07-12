@@ -7,7 +7,7 @@ class PdfDropzone extends Component {
     super()
     this.state = {
       accept: '.pdf',
-      files: [],
+      file: [],
       dropzoneActive: false
     }
   }
@@ -24,32 +24,57 @@ class PdfDropzone extends Component {
     });
   }
 
-  onDrop(files) {
-    this.setState({
-      files,
-      dropzoneActive: false
-    });
+convertDataURIToBinary(dataURI) {
+	const BASE64_MARKER = ';base64,';
+  const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  const base64 = dataURI.substring(base64Index);
+  const raw = window.atob(base64);
+  const rawLength = raw.length;
+  const array = new Uint8Array(new ArrayBuffer(rawLength));
 
+  for(let i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  
+  return array;
+}
+
+  onDrop(file) {
+  	new Promise((resolve, reject) => {
+  		const reader = new FileReader()
+  		reader.readAsDataURL(file[0])
+  		reader.onload = () => {
+  			if(!!reader.result){
+  				const array = this.convertDataURIToBinary(reader.result)
+  				resolve(array)
+  			} else{
+  				reject(Error("Failed converting to Uint8Array"))
+  			}
+  		}
+  	})
+  	.then(array => {
+  	  this.setState({
+      	file: array,
+      	dropzoneActive: false
+    	}) 	
+  	}, err => {
+  		return console.log(err)
+  	})
   }
 
   onSubmit(e) {
   	e.preventDefault();
-  	const { files } = this.state;
+  	const { file } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-			headers: {
-            "Content-Type": "application/json"
-      },  		
-  		body: JSON.stringify({
-  			files: files
-  		}),
+  		file: file,
   	})
     .then(res => res.json())
     .then(res => console.log(res))
   }
 
   render() {
-    const { accept, files, dropzoneActive } = this.state;
+    const { accept, file, dropzoneActive } = this.state;
     const overlayStyle = {
       position: 'absolute',
       top: 0,
@@ -79,7 +104,7 @@ class PdfDropzone extends Component {
           		<h2>Dropped Files Here</h2>
           		<ul>
             		{
-              		files.map(f => <li>{f.name} - {f.size} bytes</li>)
+              		file.length===0?null:<em>File detected, submit to parse.</em>
             		}
           		</ul>
     				</div>

@@ -7,23 +7,22 @@ const path = require("path");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
-const { execFile } = require('child_process');
+const { fork } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.use(morgan('common'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb', extended: true}));
 
 app.post('/parse', (req, res) => {
-	const {files} = req.body;
-	console.log(files[0].preview)
-	/*const child = execFile('node', [`pdf2json ${files[0]}`], (error, stdout, stderr) => {
-		if(error) {
-			console.error('stderr', stderr);
-			throw error;
-		}
-			console.log('stdout', stdout);
+	console.log(req.body.file)
+	/*
+	const child = fork('./pdf2json.js');
+	child.send(file);
+	child.on('message', data => {
+		res.end(data)
 	})*/
 })
 

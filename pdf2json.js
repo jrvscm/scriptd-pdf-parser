@@ -11,6 +11,12 @@ const CHUNK_TYPES = {
   dialogue: 'dialogue'
 };
 
+process.on('message', (file) => {
+  const parsed = parse(file).then(file => {
+    process.send(parsed)
+  })
+})
+
 const getPages = async (document) => {
   const pages = [];
 
@@ -195,8 +201,8 @@ const getParsedText = (chunk) =>
     .replace(/\s([,.!?])(\s)?/g, '$1$2');
 
 const debug = require('debug')('parser');
-const parse = async (filename) => {
-  const document = await PDFJS.getDocument(fs.readFileSync(filename));
+const parse = async (file) => {
+  const document = await PDFJS.getDocument(file);
   const pages = await getPages(document);
   const title = getTitle(pages[0]);
   const rawChunks = getChunks(pages.slice(1));
