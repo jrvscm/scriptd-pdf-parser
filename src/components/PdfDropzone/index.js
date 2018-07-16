@@ -57,6 +57,7 @@ convertDataURIToBinary(dataURI) {
       	file: array,
       	dropzoneActive: false
     	}) 	
+      console.log(this.state.file)
   	}, err => {
   		return console.log(err)
   	})
@@ -67,8 +68,10 @@ convertDataURIToBinary(dataURI) {
   	const { file } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-  		file: file,
-  	})
+      body:{  		
+        file: file,
+      }
+    })
     .then(res => res.json())
     .then(res => console.log(res))
   }

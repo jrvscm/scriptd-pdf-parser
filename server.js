@@ -17,7 +17,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit:'50mb', extended: true}));
 
 app.post('/parse', (req, res) => {
-	console.log(req.body.file)
+	console.log(req.body)
 	/*
 	const child = fork('./pdf2json.js');
 	child.send(file);
