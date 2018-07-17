@@ -8,7 +8,7 @@ class PdfDropzone extends Component {
     super()
     this.state = {
       accept: '.pdf',
-      array: null,
+      file: null,
       dropzoneActive: false
     }
   }
@@ -41,34 +41,18 @@ convertDataURIToBinary(dataURI) {
 }
 
   onDrop(file) {
-  	new Promise((resolve, reject) => {
-  		const reader = new FileReader()
-  		reader.readAsDataURL(file[0])
-  		reader.onload = () => {
-  			if(!!reader.result){
-  				const array = this.convertDataURIToBinary(reader.result)
-  				resolve(array)
-  			} else{
-  				reject(Error("Failed converting to Uint8Array"))
-  			}
-  		}
-  	})
-  	.then(array => {
-  	  this.setState({
-      	array,
-      	dropzoneActive: false
-    	}) 	
-  	}, err => {
-  		return console.log(err)
-  	})
+  	this.setState({
+      file,
+      dropzoneActive: false
+    }) 	
   }
 
   onSubmit(e) {
   	e.preventDefault();
-  	const { array } = this.state;
+  	const { file } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-      body: JSON.stringify(array),
+      body: JSON.stringify(file),
       headers:{
         'Content-Type': 'application/json'
       },
@@ -76,7 +60,7 @@ convertDataURIToBinary(dataURI) {
   }
 
   render() {
-    const { accept, array, dropzoneActive } = this.state;
+    const { accept, file, dropzoneActive } = this.state;
     const overlayStyle = {
       position: 'absolute',
       top: 0,
@@ -106,7 +90,7 @@ convertDataURIToBinary(dataURI) {
           		<h2>Dropped Files Here</h2>
           		<ul>
             		{
-              		array === null ? null : <em>File detected, submit to parse.</em>
+              		file === null ? null : <em>File detected, submit to parse.</em>
             		}
           		</ul>
     				</div>
