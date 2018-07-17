@@ -11,10 +11,8 @@ const CHUNK_TYPES = {
   dialogue: 'dialogue'
 };
 
-process.on('message', (file) => {
-  const parsed = parse(file).then(file => {
-    process.send(parsed)
-  })
+process.on('message', (data) => {
+  parse(data)
 })
 
 const getPages = async (document) => {

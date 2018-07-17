@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import glamorous from 'glamorous';
 import Dropzone from 'react-dropzone';
+import 'whatwg-fetch';
 
 class PdfDropzone extends Component {
   constructor() {
     super()
     this.state = {
       accept: '.pdf',
-      file: [],
+      array: null,
       dropzoneActive: false
     }
   }
@@ -54,10 +55,9 @@ convertDataURIToBinary(dataURI) {
   	})
   	.then(array => {
   	  this.setState({
-      	file: array,
+      	array,
       	dropzoneActive: false
     	}) 	
-      console.log(this.state.file)
   	}, err => {
   		return console.log(err)
   	})
@@ -65,19 +65,18 @@ convertDataURIToBinary(dataURI) {
 
   onSubmit(e) {
   	e.preventDefault();
-  	const { file } = this.state;
+  	const { array } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-      body:{  		
-        file: file,
-      }
+      body: JSON.stringify(array),
+      headers:{
+        'Content-Type': 'application/json'
+      },
     })
-    .then(res => res.json())
-    .then(res => console.log(res))
   }
 
   render() {
-    const { accept, file, dropzoneActive } = this.state;
+    const { accept, array, dropzoneActive } = this.state;
     const overlayStyle = {
       position: 'absolute',
       top: 0,
@@ -107,7 +106,7 @@ convertDataURIToBinary(dataURI) {
           		<h2>Dropped Files Here</h2>
           		<ul>
             		{
-              		file.length===0?null:<em>File detected, submit to parse.</em>
+              		array === null ? null : <em>File detected, submit to parse.</em>
             		}
           		</ul>
     				</div>
