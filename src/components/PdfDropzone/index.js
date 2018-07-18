@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import glamorous from 'glamorous';
 import Dropzone from 'react-dropzone';
+
+import Script from '../Script';
+
 import 'whatwg-fetch';
 
 class PdfDropzone extends Component {
@@ -8,6 +11,7 @@ class PdfDropzone extends Component {
     super()
     this.state = {
       accept: '.pdf',
+      script: null,
       file: null,
       dropzoneActive: false
     }
@@ -73,12 +77,16 @@ convertDataURIToBinary(dataURI) {
   	e.preventDefault();
   	fetch('/read')
     .then(res => res.json())
-    .then(json => console.log(json))
+    .then(scriptAsJson => {
+      this.setState({
+        script: scriptAsJson
+      })
+    })
     .catch(err => console.log(`something went wrong ${err}`))
   }
 
   render() {
-    const { accept, file, dropzoneActive } = this.state;
+    const { accept, file, dropzoneActive, script } = this.state;
     const overlayStyle = {
       position: 'absolute',
       top: 0,
@@ -92,7 +100,9 @@ convertDataURIToBinary(dataURI) {
     };
 
     return (
-    	<Form onSubmit={(e) => this.onSubmit(e)}>	
+    <Container>	
+      <Row>
+      <Form onSubmit={(e) => this.onSubmit(e)}>	
 				<fieldset>
   				<legend>Pdf Parser</legend>
       		<Dropzone
@@ -116,12 +126,35 @@ convertDataURIToBinary(dataURI) {
     		</fieldset>
     		<button style={{marginTop: 15, marginBottom: 15}}>Submit</button>
   		</Form>
+      </Row>
+      <Row>
+        <Script script={script} />
+      </Row>
+    </Container>
     );
   }
 }
 
 export default PdfDropzone;
 
+const Container = glamorous.div({
+  height: `100%`,
+  width: `100%`,
+  display: `flex`,
+  flexDirection: `column`,
+  alignItems: `space-around`,
+  justifyContent: `center`
+})
+
+const Row = glamorous.div({
+  height: `100%`,
+  width: `100%`,
+  display: `flex`,
+  flexDirection: `row`,
+  alignItems: `center`,
+  justifyContent: `center`
+})
+
 const Form = glamorous.form({
-	width: 350
+	width: 350,
 })

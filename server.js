@@ -29,7 +29,7 @@ app.get('/read', (req, res) => {
 	fs.readFile(`scripts/script.json`, 'utf8', (err, data) => {
 		if(err) throw err;
 
-		res.send(data)
+		res.send(JSON.stringify(data))
 	})
 })
 
