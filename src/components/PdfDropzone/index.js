@@ -58,19 +58,23 @@ convertDataURIToBinary(dataURI) {
       file,
       dropzoneActive: false
     }) 	
-  })
-}
 
-  onSubmit(e) {
-  	e.preventDefault();
-  	const { file } = this.state;
-  	fetch('/parse', {
-  		method: 'POST',
+    fetch('/parse', {
+      method: 'POST',
       body: JSON.stringify(file),
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       }
     })
+  })
+}
+
+  onSubmit(e) {
+  	e.preventDefault();
+  	fetch('/read')
+    .then(res => res.json())
+    .then(json => console.log(json))
+    .catch(err => console.log(`something went wrong ${err}`))
   }
 
   render() {

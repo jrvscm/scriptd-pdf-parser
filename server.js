@@ -20,20 +20,17 @@ app.use(bodyParser.urlencoded({limit:'50mb', extended: true}));
 app.post('/parse', (req, res) => {
 	const child = fork('./pdf2json');
 	child.send(req.body);
-	new Promise((resolve, reject) => {
-		child.on('message', parsed => { 
-			if(parsed) {
-				resolve(parsed)
-			} else {
-				reject();
-			}
-		})
+	child.on('message', parsed => { 
+		res.end(parsed);
 	})
-	.then(parsed => {
-		res.write(parsed);
-		res.end();
+})
+
+app.get('/read', (req, res) => {
+	fs.readFile(`scripts/script.json`, 'utf8', (err, data) => {
+		if(err) throw err;
+
+		res.send(data)
 	})
-	.catch(err => console.log(err))
 })
 
 app.use(express.static(path.resolve(__dirname, './build')));
