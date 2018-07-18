@@ -17,9 +17,8 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit:'50mb', extended: true}));
 
 app.post('/parse', (req, res) => {
-	const file = req.body;
 	const child = fork('./pdf2json');
-	child.send(file);
+	child.send(req.body);
 })
 
 app.use(express.static(path.resolve(__dirname, './build')));

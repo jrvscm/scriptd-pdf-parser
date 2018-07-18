@@ -42,7 +42,7 @@ convertDataURIToBinary(dataURI) {
 
   onDrop(droppedFile) {
   new Promise((resolve, reject) => {
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.readAsDataURL(droppedFile[0])
     reader.onload = () => {
       if(!!reader.result){
@@ -66,7 +66,10 @@ convertDataURIToBinary(dataURI) {
   	const { file } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-      body: JSON.stringify(file)
+      body: JSON.stringify(file),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      }
     })
   }
 
