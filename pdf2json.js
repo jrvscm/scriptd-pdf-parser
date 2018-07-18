@@ -13,10 +13,14 @@ const CHUNK_TYPES = {
 
 process.on('message', (data) => {
   const baseArr=[];
-  Object.keys(data).map(key => baseArr.push(data[key]))
-
-  const newUint8Array = new Uint8Array(baseArr);
-  parse(newUint8Array)
+  //maps new array from pdf json data 
+  Object.keys(data).map(key => baseArr.push(data[key])) 
+  const file = new Uint8Array(baseArr);
+  parse(file).then(parsed => {
+    //next line will write to the scripts folder with the title as the filename
+    fs.writeFileSync(`./scripts/script.json`, JSON.stringify(parsed, null, 2))
+    process.send(JSON.stringify(parsed))
+  })
 })
 
 const getPages = async (document) => {
@@ -317,8 +321,8 @@ const parse = async (file) => {
 let filename = '*';
 if(process.argv.length === 3) filename = process.argv[2]
 
-ls(`./pdfs/${filename}.pdf`, file => {
+/*ls(`./pdfs/${filename}.pdf`, file => {
   parse(file.full).then(parsed => fs.writeFileSync(`./scripts/${file.name}.json`, JSON.stringify(parsed, null, 2)));
-});
+});*/
 
 // scripts.map(script => parse(`./pdfs/${script}.pdf`).then(parsed => fs.writeFileSync(`./scripts/${script}.json`, JSON.stringify(parsed, null, 2))));
