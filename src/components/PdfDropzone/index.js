@@ -40,22 +40,33 @@ convertDataURIToBinary(dataURI) {
   return array;
 }
 
-  onDrop(file) {
+  onDrop(droppedFile) {
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(droppedFile[0])
+    reader.onload = () => {
+      if(!!reader.result){
+        const file = this.convertDataURIToBinary(reader.result)
+        resolve(file)
+      } else{
+        reject(Error("Failed converting to Uint8Array"))
+      }
+    }
+  })
+  .then(file => {
   	this.setState({
       file,
       dropzoneActive: false
     }) 	
-  }
+  })
+}
 
   onSubmit(e) {
   	e.preventDefault();
   	const { file } = this.state;
   	fetch('/parse', {
   		method: 'POST',
-      body: JSON.stringify(file),
-      headers:{
-        'Content-Type': 'application/json'
-      },
+      body: JSON.stringify(file)
     })
   }
 

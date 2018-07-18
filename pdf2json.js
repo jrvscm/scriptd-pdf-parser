@@ -12,7 +12,7 @@ const CHUNK_TYPES = {
 };
 
 process.on('message', (data) => {
-  parse(data)
+  parse({data: data})
 })
 
 const getPages = async (document) => {

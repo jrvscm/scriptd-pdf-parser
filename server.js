@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const { fork } = require('child_process');
-const FileReader = require('filereader');
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
@@ -17,27 +17,9 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit:'50mb', extended: true}));
 
 app.post('/parse', (req, res) => {
-	const file = req.body[0].preview;
-	new Promise((resolve, reject) => {
-  	const reader = new FileReader()
-  	reader.readAsDataURL(file)
-  	reader.onload = () => {
-  		if(!!reader.result){
-  			const array = this.convertDataURIToBinary(reader.result)
-  			resolve(array)
-  		} else{
-  			reject(Error("Failed converting to Uint8Array"))
-  		}
-  	}
-  })
-  .then(array => {
-  	console.log(array)
-		/*const child = fork('./pdf2json.js');
-		child.send(array);
-		child.on('message', data => {
-			res.end(data)
-		})*/
-	})
+	const file = req.body;
+	const child = fork('./pdf2json');
+	child.send(file);
 })
 
 app.use(express.static(path.resolve(__dirname, './build')));
