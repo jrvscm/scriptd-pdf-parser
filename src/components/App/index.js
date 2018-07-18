@@ -16,7 +16,7 @@ class App extends Component {
 export default App;
 
 const Container = glamorous.div({
-  height: `100%`,
+  minHeight: `100vh`,
   width: `100%`,
   display: `flex`,
   flexDirection: `row`,

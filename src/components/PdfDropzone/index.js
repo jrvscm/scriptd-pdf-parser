@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import glamorous from 'glamorous';
 import Dropzone from 'react-dropzone';
-
-import Script from '../Script';
-
+import JSONpretty from 'react-json-pretty';
 import 'whatwg-fetch';
+import './index.css';
 
 class PdfDropzone extends Component {
   constructor() {
@@ -115,7 +114,7 @@ convertDataURIToBinary(dataURI) {
       		>
         		{ dropzoneActive && <div style={overlayStyle}>Drop files...</div> }
         		<div>
-          		<h2>Dropped Files Here</h2>
+          		<h2>Drop Files Here</h2>
           		<ul>
             		{
               		file === null ? null : <em>File detected, submit to parse.</em>
@@ -128,7 +127,7 @@ convertDataURIToBinary(dataURI) {
   		</Form>
       </Row>
       <Row>
-        <Script script={script} />
+        <JSONpretty id='json-pretty' className="custom-json-pretty" json={script!==null?script:""} />
       </Row>
     </Container>
     );
@@ -142,17 +141,16 @@ const Container = glamorous.div({
   width: `100%`,
   display: `flex`,
   flexDirection: `column`,
-  alignItems: `space-around`,
+  alignItems: `center`,
   justifyContent: `center`
 })
 
 const Row = glamorous.div({
-  height: `100%`,
   width: `100%`,
   display: `flex`,
   flexDirection: `row`,
   alignItems: `center`,
-  justifyContent: `center`
+  justifyContent: `center`,
 })
 
 const Form = glamorous.form({
