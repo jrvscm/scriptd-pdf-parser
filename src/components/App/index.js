@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import glamorous from 'glamorous';
 
+import Background from '../../images/Background.png';
 import PdfDropzone from '../PdfDropzone';
 
 class App extends Component {
@@ -21,5 +22,6 @@ const Container = glamorous.div({
   display: `flex`,
   flexDirection: `row`,
   alignItems: `center`,
-  justifyContent: `center`
+  justifyContent: `center`,
+  backgroundColor: `#fea0a0`
 })

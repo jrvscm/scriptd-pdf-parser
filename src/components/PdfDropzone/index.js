@@ -86,43 +86,30 @@ convertDataURIToBinary(dataURI) {
 
   render() {
     const { accept, file, dropzoneActive, script } = this.state;
-    const overlayStyle = {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      padding: '2.5em 0',
-      background: 'rgba(0,0,0,0.5)',
-      textAlign: 'center',
-      color: '#fff'
-    };
-
     return (
     <Container>	
       <Row>
       <Form onSubmit={(e) => this.onSubmit(e)}>	
-				<fieldset>
-  				<legend>Pdf Parser</legend>
+				<Fieldset>
+  				<Legend>Pdf Parser</Legend>
       		<Dropzone
         		disableClick
-        		style={{position: "relative"}}
         		accept={accept}
         		onDrop={this.onDrop.bind(this)}
         		onDragEnter={this.onDragEnter.bind(this)}
         		onDragLeave={this.onDragLeave.bind(this)}
       		>
         		{ dropzoneActive && <div style={overlayStyle}>Drop files...</div> }
-        		<div>
-          		<h2>Drop Files Here</h2>
-          		<ul>
+        		<InnerContainer>
+          		<h2 style={{margin: 0, padding: 0, color: '#0f59e1'}}>Drop File Here</h2>
+          		<Detection>
             		{
-              		file === null ? null : <em>File detected, submit to parse.</em>
+              		file === null ? null : <em>File parsed, submit to view.</em>
             		}
-          		</ul>
-    				</div>
+          		</Detection>
+    				</InnerContainer>
     			</Dropzone>		
-    		</fieldset>
+    		</Fieldset>
     		<button style={{marginTop: 15, marginBottom: 15}}>Submit</button>
   		</Form>
       </Row>
@@ -136,17 +123,53 @@ convertDataURIToBinary(dataURI) {
 
 export default PdfDropzone;
 
+const overlayStyle = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  padding: '2.5em 0',
+  background: 'rgba(0,0,0,0.5)',
+  textAlign: 'center',
+  color: '#fff'
+};
+
+const Detection = glamorous.div({
+  margin: `5%`
+})
+
+const Legend = glamorous.legend({
+  fontWeight: `bold`,
+  color: '#0f59e1'
+})
+
+const Fieldset = glamorous.fieldset({
+  background: `#fff`,
+  WebkitBoxShadow: `0px 0px 5px 0px rgba(0,0,0,0.75)`,
+  MozBoxShadow: `0px 0px 5px 0px rgba(0,0,0,0.75)`,
+  boxShadow: `0px 0px 5px 0px rgba(0,0,0,0.75)`,
+  borderRadius: 6
+})
+
+const InnerContainer = glamorous.div({
+  height: `100%`,
+  display: `flex`,
+  flexDirection: `column`,
+  alignItems: `center`,
+  justifyContent: `center`,
+})
+
 const Container = glamorous.div({
   height: `100%`,
   width: `100%`,
   display: `flex`,
   flexDirection: `column`,
   alignItems: `center`,
-  justifyContent: `center`
+  justifyContent: `center`,
 })
 
 const Row = glamorous.div({
-  width: `100%`,
   display: `flex`,
   flexDirection: `row`,
   alignItems: `center`,
@@ -154,5 +177,9 @@ const Row = glamorous.div({
 })
 
 const Form = glamorous.form({
-	width: 350,
+	width: `100%`,
+  display: `flex`,
+  flexDirection: `column`,
+  alignItems: `center`,
+  justifyContent: `center`
 })
